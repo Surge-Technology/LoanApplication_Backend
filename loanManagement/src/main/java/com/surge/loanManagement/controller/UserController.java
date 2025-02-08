@@ -23,6 +23,7 @@ public class UserController {
 
 	@PostMapping("/createUser")
 	public ResponseEntity<User> createUser(@RequestBody User user) {
+		System.out.println(user);
 		User createdUser = userService.createUser(user);
 		return ResponseEntity.ok(createdUser);
 	}
@@ -50,4 +51,23 @@ public class UserController {
 		userService.deleteUser(userId);
 		return ResponseEntity.noContent().build();
 	}
+	  @PostMapping("/login")
+	    public ResponseEntity<String> login(@RequestBody User loginUser) {
+	        User user = userService.login(loginUser.getEmail(), loginUser.getPassword());
+
+	        if (user != null) {
+	            return ResponseEntity.ok("Login successful! Welcome, " + user.getUsername());
+	        } else {
+	            return ResponseEntity.status(401).body("Invalid email/username or password");
+	        }
+	    }
+//	  @PostMapping("/login")
+//	    public ResponseEntity<String> login(@RequestBody User loginUser) {
+//	        User user = userService.login(loginUser.getEmail(), loginUser.getPassword());
+//	        if (user != null) {
+//	            return ResponseEntity.ok("Login successful! Welcome, " + user.getUsername());
+//	        } else {
+//	            return ResponseEntity.status(401).body("Invalid email or password");
+//	        }
+//	    }
 }

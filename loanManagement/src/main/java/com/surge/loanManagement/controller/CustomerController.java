@@ -41,22 +41,22 @@ public class CustomerController {
 	@Autowired
 	ProcessEngine processEngine;
 
-	@PostMapping("/register")
-	public Map<String, Object> start(@RequestBody User user) {
-
-		ProcessInstance processInstance = processEngine.getRuntimeService()
-				.createProcessInstanceByKey("LoanManagementApplication").execute();
-
-		processInstanceId = processInstance.getId();
-
-		User savedUser = userService.createUser(user);
-
-		Map<String, Object> response = new HashMap<String, Object>();
-		response.put("processInstanceId", processInstanceId);
-		response.put("user", savedUser);
-
-		return response;
-	}
+//	@PostMapping("/register")
+//	public Map<String, Object> start(@RequestBody User user) {
+//
+//		ProcessInstance processInstance = processEngine.getRuntimeService()
+//				.createProcessInstanceByKey("LoanManagementApplication").execute();
+//
+//		processInstanceId = processInstance.getId();
+//
+//		User savedUser = userService.createUser(user);
+//
+//		Map<String, Object> response = new HashMap<String, Object>();
+//		response.put("processInstanceId", processInstanceId);
+//		response.put("user", savedUser);
+//
+//		return response;
+//	}
 	
 	@PostMapping("/saveDetails")
 	public String saveDetails(@RequestBody Map<String, Object> details) {

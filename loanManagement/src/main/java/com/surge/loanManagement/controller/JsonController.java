@@ -238,22 +238,22 @@ public class JsonController {
 		}
 	}
 
-	@CrossOrigin
-	@GetMapping("/getActiveTasks")
-	public ResponseEntity<List<TaskDTO>> getActiveTasks(@RequestParam String user) {
-		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-		TaskService taskService = processEngine.getTaskService();
-		userId = user;
-		taskService = processEngine.getTaskService();
-		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
-		List<TaskDTO> taskDTOs = tasks.stream().map(task -> {
-			Timestamp creationTimestamp = task.getCreateTime() != null ? new Timestamp(task.getCreateTime().getTime())
-					: null;
-			return new TaskDTO(task.getId(), task.getName(), task.getAssignee(), task.getProcessInstanceId(),
-					creationTimestamp);
-		}).collect(Collectors.toList());
-		return ResponseEntity.ok(taskDTOs);
-	}
+//	@CrossOrigin
+//	@GetMapping("/getActiveTasks")
+//	public ResponseEntity<List<TaskDTO>> getActiveTasks(@RequestParam String user) {
+//		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+//		TaskService taskService = processEngine.getTaskService();
+//		userId = user;
+//		taskService = processEngine.getTaskService();
+//		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
+//		List<TaskDTO> taskDTOs = tasks.stream().map(task -> {
+//			Timestamp creationTimestamp = task.getCreateTime() != null ? new Timestamp(task.getCreateTime().getTime())
+//					: null;
+//			return new TaskDTO(task.getId(), task.getName(), task.getAssignee(), task.getProcessInstanceId(),
+//					creationTimestamp);
+//		}).collect(Collectors.toList());
+//		return ResponseEntity.ok(taskDTOs);
+//	}
 
 	@CrossOrigin
 	@PostMapping("/loanApproval")
@@ -312,19 +312,7 @@ public class JsonController {
 		return jsonData.orElseThrow(() -> new RuntimeException("JsonData not found with id: " + id));
 	}
 
-	@PutMapping("/updateJsonData/{id}")
-	public String updateJson(@PathVariable Long id, @RequestBody String jsonData) {
-		try {
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode rootNode = objectMapper.readTree(jsonData);
-			String emailId = rootNode.path("emailId").asText();
-			repository.updateJsonData(id, jsonData, emailId);
-			return "JSON data updated successfully!";
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Error processing the JSON data.");
-		}
-	}
+
 
 	@CrossOrigin
 	@GetMapping("/getJsonDataByEmail")
@@ -361,14 +349,15 @@ public class JsonController {
 		JsonNode rootNode = objectMapper.readTree(loanDetails);
 		content = rootNode.path("clarificationDetails").asText();
 		System.out.println(content);
-		String to = emailIdData;
+		String to = "bala@gmail.com";
+//		String to = emailIdData;
 		String subject = "Clarification Needed";
 		String body = "Dear Customer,\n\n"
 				+ "We need additional clarification regarding your loan application. Specifically, we require the following details:\n"
 				+ "- " + content + "\n\n" + "Please provide the necessary information by visiting the following link: "
 				+ "http://localhost:3000/#/file\n\n" + "Thank you for your prompt attention to this matter.\n\n";
 		System.out.println(body);
-		emailService.sendSimpleEmail(to, subject, body);
+//		emailService.sendSimpleEmail(to, subject, body);
 		System.out.println("mail sent");
 		return "mail Sent";
 	}
@@ -377,13 +366,14 @@ public class JsonController {
 	@PostMapping("/emailSenderApproval")
 	public String emailSenderApproval() {
 		System.out.println("Sending email to: " + emailIdData);
-
-		String to = emailIdData;
+		String to = "bala@gmail.com";
+//		String to = emailIdData;
 		String subject = "Loan Approval Confirmation";
 		String body = "Congratulations! Your application has been deemed eligible for a loan. "
 				+ "We have attached the disbursement details in the form. Once you acknowledge, we can proceed with account generation."
 				+ "http://localhost:3000/#/LoanAmountDetails";
-		emailService.sendSimpleEmail(to, subject, body);
+		System.out.println(body);
+//		emailService.sendSimpleEmail(to, subject, body);
 		return "Email Sent Successfully";
 	}
 
@@ -391,11 +381,12 @@ public class JsonController {
 	@PostMapping("/emailSenderRejection")
 	public String emailSenderRejection() {
 		System.out.println("Sending email to: " + emailIdData);
-		String to = emailIdData;
+		String to = "bala@gmail.com";
 		String subject = "Loan Application Status";
 		String body = "We regret to inform you that your loan application has not been approved. "
 				+ "Please contact our support team for further details.";
-		emailService.sendSimpleEmail(to, subject, body);
+		System.out.println(body);
+//		emailService.sendSimpleEmail(to, subject, body);
 		return "Email Sent Successfully";
 	}
 

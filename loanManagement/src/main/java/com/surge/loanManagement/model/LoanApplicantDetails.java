@@ -20,6 +20,7 @@ public class LoanApplicantDetails {
     
     @Column(columnDefinition = "JSONB")
     private String data; 
+ 
     
     @Column(nullable = false)
     private String emailId;

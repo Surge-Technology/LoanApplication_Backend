@@ -1,41 +1,45 @@
 package com.surge.loanManagement.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "USER_DETAILS")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "USER_ID")
-    private long userId;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "USERNAME", unique = true, nullable = false)
-    private String username;
+	@NotBlank
+	private String username;
 
-    @Column(name = "PASSWORD", nullable = false)
-    private String password;
+	@NotBlank
+	private String email;
 
-    @Column(name = "EMAIL", nullable = false)
-    private String email;
-    
-    @Column(name = "Role")
-    private String role;
+	@NotBlank
+	private String password;
 
-	public long getUserId() {
-		return userId;
+	private String role;
+
+	public String getRole() {
+		return role;
 	}
 
-	public void setUserId(long userId) {
-		this.userId = userId;
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getUsername() {
@@ -46,14 +50,6 @@ public class User {
 		this.username = username;
 	}
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -62,14 +58,13 @@ public class User {
 		this.email = email;
 	}
 
-	public String getRole() {
-		return role;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setPassword(String password) {
+		this.password = password;
 	}
-    
-    
+	
+	
 }
-   

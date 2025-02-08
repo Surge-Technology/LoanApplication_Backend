@@ -8,14 +8,24 @@ public class TaskDTO {
     private String assignee;
     private String processInstanceId;
     private Timestamp creationTimestamp;
+    private Object rootNode;
 
-    public TaskDTO(String taskId, String taskName, String assignee, String processInstanceId,Timestamp creationTimestamp) {
+    public TaskDTO(String taskId, String taskName, String assignee, String processInstanceId,Timestamp creationTimestamp,Object rootNode) {
         this.taskId = taskId;
         this.taskName = taskName;
         this.assignee = assignee;
         this.processInstanceId = processInstanceId;
         this.creationTimestamp = creationTimestamp;
+        this.rootNode = rootNode;
     }
+
+	public Object getRootNode() {
+		return rootNode;
+	}
+
+	public void setRootNode(Object rootNode) {
+		this.rootNode = rootNode;
+	}
 
 	public String getTaskId() {
 		return taskId;
