@@ -33,7 +33,7 @@ public interface LoanApplicantDetailsRepository extends JpaRepository<LoanApplic
 	    void updateLoanStatus(@Param("loanAccountNumber") String loanAccountNumber, @Param("status") String status, @Param("data") String data);
 	 
 	    
-	    
+	   // Optional<LoanApplicantDetails> findByAccountNumber(String loanAccountNumber);
 	    LoanApplicantDetails findByLoanAccountNumber(String loanAccountNumber);
 	 
 	    

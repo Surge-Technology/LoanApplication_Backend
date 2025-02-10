@@ -45,6 +45,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -90,6 +91,8 @@ public class LoanApplicantDetailsController {
 	@Autowired
 	LoanDetailsService loanDetailsService;
 
+	private String clarificationDetails = "";
+	private String content;
 	Map<String, Object> responseMap = new HashMap<>();
 	private String processInstanceId;
 	private String userId;
@@ -102,76 +105,157 @@ public class LoanApplicantDetailsController {
 	private final Map<String, Object> loanResponseMap = new HashMap<>();
 	private String emailIdData;
 	private String loanStatus;
-
+	private Long loanAmount;
+	private String applicantName;
+//
+//	@CrossOrigin
+//	@PostMapping("/saveApplicantDetails")
+//	public ResponseEntity<Map<String, Object>> saveJson(@RequestBody String data) throws IOException {
+//		ProcessInstance processInstance = processEngine.getRuntimeService()
+//				.createProcessInstanceByKey("Loan_Application").execute();
+//		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+//		TaskService taskService = processEngine.getTaskService();
+//		RuntimeService runtimeService = processEngine.getRuntimeService();
+//		processInstanceId = processInstance.getId();
+//		JsonNode rootNode = objectMapper.readTree(data);
+//		runtimeService.setVariable(processInstanceId, "emailId", emailId);
+//		if (rootNode.has("Files")) {
+//			JsonNode filesNode = rootNode.path("Files").path("otherFiles");
+//			for (JsonNode fileNode : filesNode) {
+//				String fileName = fileNode.path("name").asText();
+//				String fileContent = fileNode.path("content").asText();
+//				documentService.storeFile(fileName, fileContent);
+//			}
+//		}
+//		String dobString = rootNode.path("personalData").path("personalInfo").path("dob").asText();
+//		int age = calculateAgeFromDOB(dobString);
+//		double annualIncome = 0;
+//		if (rootNode.has("houseHold")) {
+//			annualIncome = rootNode.path("houseHold").path("annualIncome").asDouble();
+//		} else if (rootNode.has("employmentData")) {
+//			annualIncome = rootNode.path("employmentData").path("annualIncome").asDouble();
+//		}
+//
+//		responseMap.put("age", age);
+//		responseMap.put("annualIncome", annualIncome);
+//		emailId = rootNode.path("personalData").path("contactInfo").path("email").asText();
+//		runtimeService.setVariable(processInstanceId, "emailId", emailId);
+//		applicantName = rootNode.path("personalData").path("personalInfo").path("legalFullName").asText();
+//		loanAmount = rootNode.path("bankDetails").path("loanAmount").asLong();
+//		String loanType = rootNode.path("bankDetails").path("loanType").asText();
+//		loanAccountNumber = generateLoanAccountNumber();
+//		loanStatus = "Pending";
+//		Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+//
+////		loanApplicantDetailsRepository.saveJson(data, emailId, loanAccountNumber, createdDate, loanStatus, loanType,
+////				loanAmount, applicantName);
+//		int rowsAffected = loanApplicantDetailsRepository.saveJson(data, emailId, loanAccountNumber, createdDate,
+//				loanStatus, loanType, loanAmount, applicantName);
+//
+//		LoanApplicantDetails savedApplicant = loanApplicantDetailsRepository
+//				.findTopByEmailIdOrderByCreatedDateDesc(emailId);
+//
+//		Long generatedId = (savedApplicant != null) ? savedApplicant.getId() : null;
+//
+//		Map<String, Object> applicationData = new HashMap<>();
+//		applicationData.put("id", generatedId);
+//		applicationData.put("emailId", emailId);
+//		applicationData.put("loanAccountNumber", loanAccountNumber);
+//		applicationData.put("createdDate", createdDate);
+//		applicationData.put("loanStatus", loanStatus);
+//		applicationData.put("loanType", loanType);
+//		applicationData.put("loanAmount", loanAmount);
+//		applicationData.put("applicantName", applicantName);
+//		applicationData.put("jsonData", data);
+//
+//		loanApplications.put(loanAccountNumber, applicationData);
+//		System.out.println(loanApplications);
+//
+//		String subject = "Loan Application Submission Confirmation";
+//		String body = "Dear Applicant,\n\nYour loan application has been successfully submitted. We will process your request and update you shortly.\n\nThank you.";
+//		// emailService.sendSimpleEmail(emailId, subject, body);
+//		if (rootNode.has("Files")) {
+//			JsonNode filesNode = rootNode.path("Files").path("otherFiles");
+//			for (JsonNode fileNode : filesNode) {
+//				String fileName = fileNode.path("name").asText();
+//				String fileContent = fileNode.path("content").asText();
+//				documentService.storeFile(fileName, fileContent);
+//			}
+//		}
+//
+//		return ResponseEntity.ok(applicationData);
+//	}
 	@CrossOrigin
 	@PostMapping("/saveApplicantDetails")
 	public ResponseEntity<Map<String, Object>> saveJson(@RequestBody String data) throws IOException {
-		ProcessInstance processInstance = processEngine.getRuntimeService()
-				.createProcessInstanceByKey("Loan_Application").execute();
-		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-		TaskService taskService = processEngine.getTaskService();
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		processInstanceId = processInstance.getId();
-		JsonNode rootNode = objectMapper.readTree(data);
-		String dobString = rootNode.path("personalData").path("personalInfo").path("dob").asText();
-		int age = calculateAgeFromDOB(dobString);
+	    ProcessInstance processInstance = processEngine.getRuntimeService()
+	            .createProcessInstanceByKey("Loan_Application").execute();
+	    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+	    TaskService taskService = processEngine.getTaskService();
+	    RuntimeService runtimeService = processEngine.getRuntimeService();
+	    processInstanceId = processInstance.getId();
+	    
+	    JsonNode rootNode = objectMapper.readTree(data);
 
-		double annualIncome = 0;
-		if (rootNode.has("houseHold")) {
-			annualIncome = rootNode.path("houseHold").path("annualIncome").asDouble();
-		} else if (rootNode.has("employmentData")) {
-			annualIncome = rootNode.path("employmentData").path("annualIncome").asDouble();
-		}
+	    String emailId = rootNode.path("personalData").path("contactInfo").path("email").asText();
+	    runtimeService.setVariable(processInstanceId, "emailId", emailId);
 
-		responseMap.put("age", age);
-		responseMap.put("annualIncome", annualIncome);
-		emailId = rootNode.path("personalData").path("contactInfo").path("email").asText();
-		runtimeService.setVariable(processInstanceId, "emailId", emailId);
-		String applicantName = rootNode.path("personalData").path("personalInfo").path("legalFullName").asText();
-		Long loanAmount = rootNode.path("bankDetails").path("loanAmount").asLong();
-		String loanType = rootNode.path("bankDetails").path("loanType").asText();
-		loanAccountNumber = generateLoanAccountNumber();
-		loanStatus = "Pending";
-		Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+	    if (rootNode.has("Files")) {
+	        JsonNode filesNode = rootNode.path("Files").path("otherFiles");
+	        for (JsonNode fileNode : filesNode) {
+	            String fileName = fileNode.path("name").asText();
+	            String fileContent = fileNode.has("content") ? fileNode.path("content").asText() : null;
+	            if (fileContent == null || fileContent.isEmpty()) {
+	                System.out.println("Skipping file " + fileName + " due to missing content.");
+	                continue;
+	            }
+	            String storedFilePath = documentService.storeFile(fileName, fileContent);
+	            System.out.println("Stored file: " + storedFilePath);
+	        }
+	    }
+	    String dobString = rootNode.path("personalData").path("personalInfo").path("dob").asText();
+	    int age = calculateAgeFromDOB(dobString);
+	    double annualIncome = 0;
+	    if (rootNode.has("houseHold")) {
+	        annualIncome = rootNode.path("houseHold").path("annualIncome").asDouble();
+	    } else if (rootNode.has("employmentData")) {
+	        annualIncome = rootNode.path("employmentData").path("annualIncome").asDouble();
+	    }
+	    String applicantName = rootNode.path("personalData").path("personalInfo").path("legalFullName").asText();
+	    long loanAmount = rootNode.path("bankDetails").path("loanAmount").asLong();
+	    String loanType = rootNode.path("bankDetails").path("loanType").asText();
+	    String loanAccountNumber = generateLoanAccountNumber();
+	    String loanStatus = "Pending";
+	    Timestamp createdDate = new Timestamp(System.currentTimeMillis());
+	    int rowsAffected = loanApplicantDetailsRepository.saveJson(data, emailId, loanAccountNumber, createdDate,
+	            loanStatus, loanType, loanAmount, applicantName);
+	    LoanApplicantDetails savedApplicant = loanApplicantDetailsRepository
+	            .findTopByEmailIdOrderByCreatedDateDesc(emailId);
 
-		if (rootNode.has("Files")) {
-			JsonNode filesNode = rootNode.path("Files").path("otherFiles");
-			for (JsonNode fileNode : filesNode) {
-				String fileName = fileNode.path("name").asText();
-				String fileContent = fileNode.path("content").asText();
-				documentService.storeFile(fileName, fileContent);
-			}
-		}
-//		loanApplicantDetailsRepository.saveJson(data, emailId, loanAccountNumber, createdDate, loanStatus, loanType,
-//				loanAmount, applicantName);
-		int rowsAffected = loanApplicantDetailsRepository.saveJson(data, emailId, loanAccountNumber, createdDate,
-				loanStatus, loanType, loanAmount, applicantName);
+	    Long generatedId = (savedApplicant != null) ? savedApplicant.getId() : null;
 
-		LoanApplicantDetails savedApplicant = loanApplicantDetailsRepository
-				.findTopByEmailIdOrderByCreatedDateDesc(emailId);
+	    Map<String, Object> applicationData = new HashMap<>();
+	    applicationData.put("id", generatedId);
+	    applicationData.put("emailId", emailId);
+	    applicationData.put("loanAccountNumber", loanAccountNumber);
+	    applicationData.put("createdDate", createdDate);
+	    applicationData.put("loanStatus", loanStatus);
+	    applicationData.put("loanType", loanType);
+	    applicationData.put("loanAmount", loanAmount);
+	    applicationData.put("applicantName", applicantName);
+	    applicationData.put("jsonData", data);
 
-		Long generatedId = (savedApplicant != null) ? savedApplicant.getId() : null;
+	    loanApplications.put(loanAccountNumber, applicationData);
+	    System.out.println("Loan Application Saved: " + loanApplications);
 
-		Map<String, Object> applicationData = new HashMap<>();
-		applicationData.put("id", generatedId);
-		applicationData.put("emailId", emailId);
-		applicationData.put("loanAccountNumber", loanAccountNumber);
-		applicationData.put("createdDate", createdDate);
-		applicationData.put("loanStatus", loanStatus);
-		applicationData.put("loanType", loanType);
-		applicationData.put("loanAmount", loanAmount);
-		applicationData.put("applicantName", applicantName);
-		applicationData.put("jsonData", data);
+	    String subject = "Loan Application Submission Confirmation";
+	    String body = "Dear Applicant,\n\nYour loan application has been successfully submitted. "
+	            + "We will process your request and update you shortly.\n\nThank you.";
+	 //   emailService.sendSimpleEmail(emailId, subject, body);
 
-		loanApplications.put(loanAccountNumber, applicationData);
-		System.out.println(loanApplications);
-
-		String subject = "Loan Application Submission Confirmation";
-		String body = "Dear Applicant,\n\nYour loan application has been successfully submitted. We will process your request and update you shortly.\n\nThank you.";
-		// emailService.sendSimpleEmail(emailId, subject, body);
-
-		return ResponseEntity.ok(applicationData);
+	    return ResponseEntity.ok(applicationData);
 	}
+
 
 	private String generateLoanAccountNumber() {
 		return String.format("%04d", new Random().nextInt(10000));
@@ -207,6 +291,7 @@ public class LoanApplicantDetailsController {
 		return responseMap;
 	}
 
+	@CrossOrigin
 	@GetMapping("/calculateCibilScore")
 	public int calculateCibil() {
 		int age = (int) responseMap.get("age");
@@ -309,45 +394,96 @@ public class LoanApplicantDetailsController {
 
 		return ResponseEntity.ok("Loan approval process completed successfully.");
 	}
-
 	@CrossOrigin
-	@PostMapping("/UnderWriterApprover")
+	@PostMapping("/UnderWriter")
 	public ResponseEntity<String> UnderWriterApprover(@RequestBody String approval) throws JsonProcessingException {
-		System.out.println("Received Approval Data: " + approval);
-		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-		TaskService taskService = processEngine.getTaskService();
-		RuntimeService runtimeService = processEngine.getRuntimeService();
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode rootNode = objectMapper.readTree(approval);
-		String finalDecision = rootNode.path("underWriterDecision").asText();
-		String clarificationDetails = "";
-		if ("needClarification".equals(finalDecision)) {
-			clarificationDetails = rootNode.path("clarificationDetails").asText();
-		}
-		System.out.println("Final Decision: " + finalDecision);
-		System.out.println("Clarification Details: " + clarificationDetails);
-		runtimeService.setVariable(processInstanceId, "UnderWriter", finalDecision);
-		if (!clarificationDetails.isEmpty()) {
-			runtimeService.setVariable(processInstanceId, "clarificationDetails", clarificationDetails);
-		}
-		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
-		Task task = tasks.get(0);
-		taskId = task.getId();
-		userId = task.getAssignee();
-		System.out.println("Task ID: " + taskId);
-		System.out.println("Assigned User: " + userId);
-		taskService.claim(taskId, userId);
-		System.out.println("Task claimed successfully by user: " + userId);
-		taskService.complete(taskId);
-		System.out.println("Task completed successfully.");
-		return ResponseEntity.ok("Loan approval process completed successfully.");
+	    System.out.println("Received Approval Data: " + approval);
+
+	    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+	    TaskService taskService = processEngine.getTaskService();
+	    RuntimeService runtimeService = processEngine.getRuntimeService();
+
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    JsonNode rootNode = objectMapper.readTree(approval);
+
+	    String finalDecision = rootNode.has("UnderWriter") ? rootNode.get("UnderWriter").asText() : "";
+
+	    System.out.println("Extracted finalDecision: " + finalDecision);
+
+	    
+	    if ("needClarification".equals(finalDecision)) {
+	        clarificationDetails = rootNode.path("clarificationDetails").asText("");
+	    }
+
+	    System.out.println("Final Decision: " + finalDecision);
+	    System.out.println("Clarification Details: " + clarificationDetails);
+
+	    runtimeService.setVariable(processInstanceId, "UnderWriter", finalDecision);
+
+	    if (!clarificationDetails.isEmpty()) {
+	        runtimeService.setVariable(processInstanceId, "clarificationDetails", clarificationDetails);
+	    }
+
+	    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
+	    if (tasks.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No active task found for the given process instance.");
+	    }
+
+	    Task task = tasks.get(0);
+	    String taskId = task.getId();
+	    String userId = task.getAssignee();
+
+	    System.out.println("Task ID: " + taskId);
+	    System.out.println("Assigned User: " + userId);
+
+	    taskService.claim(taskId, userId);
+	    System.out.println("Task claimed successfully by user: " + userId);
+
+	    taskService.complete(taskId);
+	    System.out.println("Task completed successfully.");
+
+	    return ResponseEntity.ok("Loan approval process completed successfully.");
 	}
+
+
+
+//	@CrossOrigin
+//	@PostMapping("/UnderWriter")
+//	public ResponseEntity<String> UnderWriterApprover(@RequestBody String approval) throws JsonProcessingException {
+//		System.out.println("Received Approval Data: " + approval);
+//		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+//		TaskService taskService = processEngine.getTaskService();
+//		RuntimeService runtimeService = processEngine.getRuntimeService();
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		JsonNode rootNode = objectMapper.readTree(approval);
+//		String finalDecision = rootNode.path("UnderWriter").asText();
+//		if ("needClarification".equals(finalDecision)) {
+//			clarificationDetails = rootNode.path("clarificationDetails").asText();
+//		}
+//		System.out.println("Final Decision: " + finalDecision);
+//		System.out.println("Clarification Details: " + clarificationDetails);
+//		runtimeService.setVariable(processInstanceId, "UnderWriter", finalDecision);
+//		if (!clarificationDetails.isEmpty()) {
+//			runtimeService.setVariable(processInstanceId, "clarificationDetails", clarificationDetails);
+//		}
+//		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
+//		Task task = tasks.get(0);
+//		taskId = task.getId();
+//		userId = task.getAssignee();
+//		System.out.println("Task ID: " + taskId);
+//		System.out.println("Assigned User: " + userId);
+//		taskService.claim(taskId, userId);
+//		System.out.println("Task claimed successfully by user: " + userId);
+//		taskService.complete(taskId);
+//		System.out.println("Task completed successfully.");
+//		return ResponseEntity.ok("Loan approval process completed successfully.");
+//	}
 
 	@CrossOrigin
 	@PostMapping("/calculateTenureInterest")
-	public ResponseEntity<Map<String, Object>> calculateTenureAndInterest(
-			@RequestBody Map<String, Object> requestData) {
-		Long loanAmount = Long.parseLong(requestData.get("loanAmount").toString());
+	public ResponseEntity<Map<String, Object>> calculateTenureAndInterest() {
+//			@RequestBody Map<String, Object> requestData) {
+//		Long loanAmount = Long.parseLong(requestData.get("loanAmount").toString());
 
 		int tenure;
 		double interestRate;
@@ -368,12 +504,12 @@ public class LoanApplicantDetailsController {
 			interestRate = 9.0;
 		}
 
-		Map<String, Object> response = new HashMap<>();
-		response.put("loanAmount", loanAmount);
-		response.put("tenure", tenure);
-		response.put("interestRate", interestRate);
-
-		return ResponseEntity.ok(response);
+		loanResponseMap.put("loanAmount", loanAmount);
+		loanResponseMap.put("tenure", tenure);
+		loanResponseMap.put("interestRate", interestRate);
+		loanResponseMap.put("loanAccountNumber", loanAccountNumber);
+		loanResponseMap.put("applicantName", applicantName);
+		return ResponseEntity.ok(loanResponseMap);
 	}
 
 	@CrossOrigin
@@ -385,14 +521,14 @@ public class LoanApplicantDetailsController {
 		RuntimeService runtimeService = processEngine.getRuntimeService();
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode rootNode = objectMapper.readTree(approval);
-		String finalDecision = rootNode.path("LegalApprover").asText();
-		String clarificationDetails = "";
+		String finalDecision = rootNode.path("legalReviewStatus").asText();
+		//String clarificationDetails = "";
 		if ("needClarification".equals(finalDecision)) {
 			clarificationDetails = rootNode.path("clarificationDetails").asText();
 		}
 		System.out.println("Final Decision: " + finalDecision);
 		System.out.println("Clarification Details: " + clarificationDetails);
-		runtimeService.setVariable(processInstanceId, "LegalApprover", finalDecision);
+		runtimeService.setVariable(processInstanceId, "legalReviewStatus", finalDecision);
 		if (!clarificationDetails.isEmpty()) {
 			runtimeService.setVariable(processInstanceId, "clarificationDetails", clarificationDetails);
 		}
@@ -408,23 +544,69 @@ public class LoanApplicantDetailsController {
 		System.out.println("Task completed successfully.");
 		return ResponseEntity.ok("Loan approval process completed successfully.");
 	}
+	
+
 
 	@CrossOrigin
 	@GetMapping("/getApplicantDetails")
 	public List<JsonNode> getAllApplicantData() {
-		List<JsonNode> response = new ArrayList<>();
-		ObjectMapper objectMapper = new ObjectMapper();
-		List<LoanApplicantDetails> jsonDataList = loanApplicantDetailsRepository.findAll();
-		for (LoanApplicantDetails jsonData : jsonDataList) {
-			try {
-				JsonNode jsonNode = objectMapper.readTree(jsonData.getData());
-				response.add(jsonNode);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return response;
+	    List<JsonNode> response = new ArrayList<>();
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    List<LoanApplicantDetails> jsonDataList = loanApplicantDetailsRepository.findAll();
+
+	    for (LoanApplicantDetails jsonData : jsonDataList) {
+	        try {
+	            JsonNode dataNode = objectMapper.readTree(jsonData.getData());
+
+	            ObjectNode combinedNode = objectMapper.createObjectNode();
+	            combinedNode.put("id", jsonData.getId());
+	            combinedNode.put("emailId", jsonData.getEmailId());
+	            combinedNode.put("loanAccountNumber", jsonData.getLoanAccountNumber());
+	            combinedNode.put("createdDate", jsonData.getCreatedDate() != null ? jsonData.getCreatedDate().toString() : null);
+	            combinedNode.put("loanStatus", jsonData.getLoanStatus());
+	            combinedNode.put("loanType", jsonData.getLoanType());
+	            combinedNode.put("loanAmount", jsonData.getLoanAmount());
+	            combinedNode.put("applicantName", jsonData.getApplicantName());
+	            combinedNode.setAll((ObjectNode) dataNode);
+
+	            response.add(combinedNode);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    return response;
 	}
+	
+	@CrossOrigin
+	@PostMapping("/CustomerAcknoledgemenMail")
+	public String CustomerAcknoledgemenMail() {
+		System.out.println("Sending email to: " + emailId);
+		String to = emailId;
+		String subject = "Loan Approval Confirmation";
+		String body = "Congratulations! Your application has been deemed eligible for a loan. "
+				+ "We have attached the disbursement details in the form. Once you acknowledge, we can proceed with account generation."
+				+ "http://localhost:3002/#/LoanAmountDetails";
+		System.out.println(body);
+		emailService.sendSimpleEmail(to, subject, body);
+		return "Email Sent Successfully";
+	}
+
+//	@CrossOrigin
+//	@GetMapping("/getApplicantDetails")
+//	public List<JsonNode> getAllApplicantData() {
+//		List<JsonNode> response = new ArrayList<>();
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		List<LoanApplicantDetails> jsonDataList = loanApplicantDetailsRepository.findAll();
+//		for (LoanApplicantDetails jsonData : jsonDataList) {
+//			try {
+//				JsonNode jsonNode = objectMapper.readTree(jsonData.getData());
+//				response.add(jsonNode);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//		return response;
+//	}
 
 	@CrossOrigin
 	@GetMapping("/getApplicantData/{id}")
@@ -444,13 +626,13 @@ public class LoanApplicantDetailsController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 		}
 	}
-//
-//	@CrossOrigin
-//	 @GetMapping("/getApplicantDataByAccount/{loanAccountNumber}")
-//	    public ResponseEntity<JsonNode> getApplicantDataByAccount(@PathVariable String loanAccountNumber) {
-//	        Optional<LoanApplicantDetails> jsonData = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
-//
-//	        
+
+	@CrossOrigin
+	@GetMapping("/getApplicantDataByAccount/{loanAccountNumber}")
+	public LoanApplicantDetails getApplicantDataByAccount(@PathVariable String loanAccountNumber) {
+		LoanApplicantDetails jsonData = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
+		return jsonData;
+
 //	        if (jsonData.isPresent()) {
 //	            try {
 //	                ObjectMapper objectMapper = new ObjectMapper();
@@ -463,7 +645,7 @@ public class LoanApplicantDetailsController {
 //	        } else {
 //	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
 //	        }
-//	    }
+	}
 
 	@CrossOrigin
 	@GetMapping("/getLoanDetails")
@@ -475,86 +657,66 @@ public class LoanApplicantDetailsController {
 		return ResponseEntity.ok(loanResponseMap);
 	}
 
+	@CrossOrigin
+	@PostMapping("/calculateTenureInterestSaveData")
+	public ResponseEntity<Map<String, Object>> calculateAndSaveLoan() {
 
+		int tenure;
+		double interestRate;
+		if (loanAmount <= 100000) {
+			tenure = 5;
+			interestRate = 5.0;
+		} else if (loanAmount <= 500000) {
+			tenure = 12;
+			interestRate = 6.0;
+		} else if (loanAmount <= 1000000) {
+			tenure = 24;
+			interestRate = 7.0;
+		} else if (loanAmount <= 5000000) {
+			tenure = 36;
+			interestRate = 8.0;
+		} else {
+			tenure = 48;
+			interestRate = 9.0;
+		}
 
-    @PostMapping("/calculateTenureInterestSaveData")
-    public ResponseEntity<Map<String, Object>> calculateAndSaveLoan(@RequestBody Map<String, Object> requestData) {
-    	 String loanAmount = requestData.get("loanAmount").toString(); 
-         Long loanAmountLong = Long.parseLong(loanAmount); 
+		String loanValue = String.valueOf(loanAmount);
 
-         int tenure;
-         double interestRate;
-         if (loanAmountLong <= 100000) {
-             tenure = 5;
-             interestRate = 5.0;
-         } else if (loanAmountLong <= 500000) {
-             tenure = 12;
-             interestRate = 6.0;
-         } else if (loanAmountLong <= 1000000) {
-             tenure = 24;
-             interestRate = 7.0;
-         } else if (loanAmountLong <= 5000000) {
-             tenure = 36;
-             interestRate = 8.0;
-         } else {
-             tenure = 48;
-             interestRate = 9.0;
-         }
+		Loan loan = new Loan();
+		loan.setTenure(tenure);
+		loan.setLoanAmount(loanValue);
+		loan.setInterest(interestRate);
+		String uanNumber = generateAccountNumber();
+		loan.setUanNumber(uanNumber);
+		loan.setLoanAccountNumber(loanAccountNumber);
+		loan.setLoanStatus(loanStatus);
 
-        Loan loan = new Loan();
-        loan.setLoanAmount(loanAmount);
-        loan.setTenure(tenure);
-        loan.setInterest(interestRate);
-        String uanNumber = generateLoanAccountNumber();
-        loan.setUanNumber(uanNumber);
-        loan.setLoanAccountNumber(loanAccountNumber);
-        loan.setLoanStatus(loanStatus);
+		Loan savedLoan = loanDetailsService.saveLoan(loan);
 
-        Loan savedLoan = loanDetailsService.saveLoan(loan);
+		Map<String, Object> response = new HashMap<>();
+		response.put("loanId", savedLoan.getLoanId());
+		response.put("loanAmount", savedLoan.getLoanAmount());
+		response.put("tenure", savedLoan.getTenure());
+		response.put("interestRate", savedLoan.getInterest());
+		response.put("uanNumber", uanNumber);
+		response.put("loanStatus", loanStatus);
+		response.put("loanAccountNumber", loanAccountNumber);
 
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("loanId", savedLoan.getLoanId());
-        response.put("loanAmount", savedLoan.getLoanAmount());
-        response.put("tenure", savedLoan.getTenure());
-        response.put("interestRate", savedLoan.getInterest());
-        response.put("uanNumber", uanNumber);
-        response.put("loanStatus", loanStatus);
-        response.put("loanAccountNumber", loanAccountNumber);
-        
-        System.out.println(response);
+		System.out.println(response);
 
-        return ResponseEntity.ok(response);
-    }
-	private static final String BASE_NUMBER = "22507000000000";
-	private long lastGeneratedNumber = Long.parseLong(BASE_NUMBER);
-	private String uanNumber;
-
-//	@CrossOrigin
-//	@PostMapping("/generateAccountNumber")
-	public ResponseEntity<String> generateAccountNumber() {
-		lastGeneratedNumber += 1;
-
-		uanNumber = String.format("%014d", lastGeneratedNumber);
-
-		System.out.println(uanNumber);
-		return ResponseEntity.ok(uanNumber);
+		return ResponseEntity.ok(response);
 	}
 
-//	@CrossOrigin
-//	@PostMapping("/emailAccountGenerator")
-//	public String emailAccountGenerator() {
-//		System.out.println("Account Number: " + uanNumber);
-//		System.out.println("Sending email to: " + emailIdData);
-//		String to = emailIdData;
-//		String subject = "Account Generated Successfully - Your Account Number: " + uanNumber;
-//		String body = "Dear Customer,\n\n"
-//				+ "We are pleased to inform you that your account has been successfully created. "
-//				+ "Your new account number is: " + uanNumber + ".\n\n";
-//
-//		emailService.sendSimpleEmail(to, subject, body);
-//		return "Email Sent Successfully";
-//	}
+	private String uanNumber;
+
+	private static final String BASE_NUMBER = "22507000000000";
+	private long lastGeneratedNumber = Long.parseLong(BASE_NUMBER);
+
+	private synchronized String generateAccountNumber() { // Make thread-safe
+		lastGeneratedNumber += 1;
+		uanNumber = String.format("%014d", lastGeneratedNumber);
+		return uanNumber;
+	}
 
 	@CrossOrigin
 	@GetMapping("/getEmailId")
@@ -639,54 +801,170 @@ public class LoanApplicantDetailsController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error parsing JSON data");
 		}
 	}
-	
-	@GetMapping("/updateStatusApproved/{loanAccountNumber}")
-	@Transactional
-	public String updateStatus(@PathVariable String loanAccountNumber) {
-	    LoanApplicantDetails detail = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
- 
-	    if (detail == null) {
-	        return "Loan applicant not found";
-	    }
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    String validJsonString;
-	    try {
-	        ObjectNode jsonNode = objectMapper.createObjectNode();
-	        jsonNode.put("updated", detail.getData());
-	        validJsonString = objectMapper.writeValueAsString(jsonNode);
-	    } catch (Exception e) {
-	        return "Failed to generate JSON: " + e.getMessage();
-	    }
-	    loanApplicantDetailsRepository.updateLoanStatus(loanAccountNumber, "Approved", validJsonString);
-	    
-	    loanStatus = "Approved";
- 
-	    return "Status updated successfully";
-	}
-	
-	@GetMapping("/updateStatusDisbursed/{loanAccountNumber}")
-	@Transactional
-	public String updateStatusDisbursed(@PathVariable String loanAccountNumber) {
-	    LoanApplicantDetails detail = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
- 
-	    if (detail == null) {
-	        return "Loan applicant not found";
-	    }
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    String validJsonString;
-	    try {
-	        ObjectNode jsonNode = objectMapper.createObjectNode();
-	        jsonNode.put("updated", detail.getData());
-	        validJsonString = objectMapper.writeValueAsString(jsonNode);
-	    } catch (Exception e) {
-	        return "Failed to generate JSON: " + e.getMessage();
-	    }
-	    loanApplicantDetailsRepository.updateLoanStatus(loanAccountNumber, "Disbursed", validJsonString);
-	    
-	    loanStatus = "Disbursed";
- 
-	    return "Status updated successfully";
-	}
-	
 
+	@CrossOrigin
+	@GetMapping("/updateStatusApproved")
+	@Transactional
+	public String updateStatus() {
+		LoanApplicantDetails detail = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
+
+		if (detail == null) {
+			return "Loan applicant not found";
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		String validJsonString;
+		try {
+			ObjectNode jsonNode = objectMapper.createObjectNode();
+			jsonNode.put("updated", detail.getData());
+			validJsonString = objectMapper.writeValueAsString(jsonNode);
+		} catch (Exception e) {
+			return "Failed to generate JSON: " + e.getMessage();
+		}
+		loanApplicantDetailsRepository.updateLoanStatus(loanAccountNumber, "Approved", validJsonString);
+
+		loanStatus = "Approved";
+
+		return "Status updated successfully";
+	}
+
+	@CrossOrigin
+	@GetMapping("/updateStatusDisbursed")
+	@Transactional
+	public String updateStatusDisbursed() {
+		LoanApplicantDetails detail = loanApplicantDetailsRepository.findByLoanAccountNumber(loanAccountNumber);
+
+		if (detail == null) {
+			return "Loan applicant not found";
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		String validJsonString;
+		try {
+			ObjectNode jsonNode = objectMapper.createObjectNode();
+			jsonNode.put("updated", detail.getData());
+			validJsonString = objectMapper.writeValueAsString(jsonNode);
+		} catch (Exception e) {
+			return "Failed to generate JSON: " + e.getMessage();
+		}
+		loanApplicantDetailsRepository.updateLoanStatus(loanAccountNumber, "Disbursed", validJsonString);
+
+		loanStatus = "Disbursed";
+
+		return "Status updated successfully";
+	}
+
+	@CrossOrigin
+	@PostMapping("/customerAcknowledgement")
+	public ResponseEntity<String> customerAcknowledgement(@RequestBody String approval) throws JsonProcessingException {
+		System.out.println("Received Approval Data: " + approval);
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		TaskService taskService = processEngine.getTaskService();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+		ObjectMapper objectMapper = new ObjectMapper();
+		JsonNode rootNode = objectMapper.readTree(approval);
+		String finalDecision = rootNode.path("Customer").asText();
+		String clarificationDetails = "";
+		if ("needClarification".equals(finalDecision)) {
+			clarificationDetails = rootNode.path("clarificationDetails").asText();
+		}
+		System.out.println("Final Decision: " + finalDecision);
+		System.out.println("Clarification Details: " + clarificationDetails);
+		runtimeService.setVariable(processInstanceId, "Customer", finalDecision);
+		if (!clarificationDetails.isEmpty()) {
+			runtimeService.setVariable(processInstanceId, "clarificationDetails", clarificationDetails);
+		}
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
+		Task task = tasks.get(0);
+		taskId = task.getId();
+		userId = task.getAssignee();
+		System.out.println("Task ID: " + taskId);
+		System.out.println("Assigned User: " + userId);
+		taskService.claim(taskId, userId);
+		System.out.println("Task claimed successfully by user: " + userId);
+		taskService.complete(taskId);
+		System.out.println("Task completed successfully.");
+		return ResponseEntity.ok("Loan approval process completed successfully.");
+	}
+
+	@CrossOrigin
+	@PostMapping("/ManagerEnd")
+	public String ManagerEnd() throws Exception {
+
+		ProcessEngine procssEngine = ProcessEngines.getDefaultProcessEngine();
+		TaskService taskService = processEngine.getTaskService();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+
+		System.out.println(processInstanceId);
+
+		Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+
+		taskService.claim(task.getId(), "Demo");
+
+		taskService.complete(task.getId());
+		System.out.println("Task completed for processInstanceId: " + processInstanceId);
+
+		return "task Completed Successfully";
+	}
+	
+	@CrossOrigin
+	@PostMapping("/emailSenderClarification")
+	public String emailSenderClarification() throws JsonMappingException, JsonProcessingException {
+		System.out.println(emailId);
+		System.out.println(content);
+		String to = emailId;
+		String subject = "Clarification Needed";
+		String body = "Dear Customer,\n\n"
+				+ "We need additional clarification regarding your loan application. Specifically, we require the following details:\n"
+				+ "- " + clarificationDetails + "\n\n" + "Please provide the necessary information by visiting the following link: "
+				+ "http://localhost:3002/#/file\n\n" + "Thank you for your prompt attention to this matter.\n\n";
+		System.out.println(body);
+		System.out.println("mail sent");
+		return "mail Sent";
+	}
+	
+	@CrossOrigin
+	@GetMapping("/clarification")
+	public String clarificationDetails() {
+		System.out.println(content);
+		String data = content;
+		return data;
+	}
+
+	@CrossOrigin
+	@PostMapping("/customerClarificationReply")
+	public ResponseEntity<String> customerClarificationReply(@RequestBody Map<String, Object> requestData) throws IOException {
+
+		List<Map<String, Object>> files = (List<Map<String, Object>>) requestData.get("files");
+
+		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+		TaskService taskService = processEngine.getTaskService();
+		RuntimeService runtimeService = processEngine.getRuntimeService();
+
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).active().list();
+		if (tasks.isEmpty()) {
+			return ResponseEntity.badRequest().body("No active tasks found for the process instance.");
+		}
+
+		Task task = tasks.get(0);
+		taskId = task.getId();
+		userId = task.getAssignee();
+
+		System.out.println("Task ID: " + taskId);
+		System.out.println("Assigned User: " + userId);
+
+		taskService.claim(taskId, userId);
+		System.out.println("Task claimed successfully by user: " + userId);
+
+		if (files != null && !files.isEmpty()) {
+			for (Map<String, Object> fileData : files) {
+				String fileName = (String) fileData.get("name");
+				String fileContent = (String) fileData.get("content"); 
+				documentService.storeFile(fileName, fileContent);
+				System.out.println("Stored file: " + fileName);
+			}
+		}
+		taskService.complete(taskId);
+		System.out.println("Task completed successfully.");
+
+		return ResponseEntity.ok("Task processed successfully");
+	}
 }

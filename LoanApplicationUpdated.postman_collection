@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "ddb13b93-505b-453b-b8ce-d75d9b9db59d",
+		"name": "LoanApplication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Updated",
+			"item": [
+				{
+					"name": "saveApplicantDetails",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Files\": {\r\n    \"comments\": \"This is a sample comment.\",\r\n    \"otherFiles\": [\r\n      {\r\n        \"name\": \"document1.pdf\"\r\n      },\r\n      {\r\n        \"name\": \"document2.jpg\"\r\n      }\r\n    ],\r\n    \"selectedTypes\": [\r\n      \"Income Proof\",\r\n      \"Other Proof\"\r\n    ],\r\n    \"isFirstConsentChecked\": true,\r\n    \"isSecondConsentChecked\": true\r\n  },\r\n  \"houseHold\": {\r\n    \"dividends\": \"4\",\r\n    \"rentalPaid\": \"10000\",\r\n    \"otherIncome\": \"no\",\r\n    \"annualIncome\": \"6000000\",\r\n    \"grossRentals\": \"200000\",\r\n    \"interestPaid\": \"40000\",\r\n    \"medicalExpense\": \"200\",\r\n    \"clothingExpense\": \"300\",\r\n    \"childcareExpense\": \"250\",\r\n    \"educationExpense\": \"400\",\r\n    \"groceriesExpense\": \"500\",\r\n    \"personalInsurance\": \"100\",\r\n    \"recreationExpense\": \"150\",\r\n    \"communicationsExpense\": \"50\",\r\n    \"transportationExpense\": \"200\"\r\n  },\r\n  \"bankDetails\": {\r\n    \"address\": \"123 Bank Street, New York, NY\",\r\n    \"bankName\": \"National Bank\",\r\n    \"comments\": \"Building a new home\",\r\n    \"loanType\": \"homeLoan\",\r\n    \"loanAmount\": \"30000000\",\r\n    \"accountType\": \"Savings\",\r\n    \"phoneNumber\": \"9876543210\",\r\n    \"accountNumber\": \"1234567890\",\r\n    \"purposeOfLoan\": \"Home Renovation\"\r\n  },\r\n  \"liabilities\": {\r\n    \"bank\": \"XYZ Bank\",\r\n    \"loanType\": \"Home Loan\",\r\n    \"otherLoan\": true,\r\n    \"amountOwed\": \"50000\",\r\n    \"borrowerName\": \"Kaney\",\r\n    \"balanceOnCard\": \"10000\",\r\n    \"otherloanType\": \"Jewel Loan\",\r\n    \"creditCardBank\": \"ABC Bank\",\r\n    \"creditCardLimit\": \"50000\",\r\n    \"interestMonthly\": \"1500\",\r\n    \"currentLoanLimit\": \"100000\",\r\n    \"primaryCardHolder\": \"Johny\",\r\n    \"currentLoanBalance\": \"30000\"\r\n  },\r\n  \"assetsDetail\": {\r\n    \"fund\": \"90000\",\r\n    \"shares\": false,\r\n    \"stocks\": true,\r\n    \"otherAssets\": true,\r\n    \"motorVehicle\": true,\r\n    \"propertyType\": \"Residential\",\r\n    \"occupancyType\": \"Owner Occupied\",\r\n    \"savingDeposits\": \"50000\",\r\n    \"superannuation\": true,\r\n    \"propertyAddress\": \"123 Main St, Cityville, ST 12345\",\r\n    \"insurancePolicies\": false,\r\n    \"otherAssetsDetails\": \"Gold bars worth $50,000\"\r\n  },\r\n  \"personalData\": {\r\n    \"addressInfo\": {\r\n      \"zip\": \"630017\",\r\n      \"city\": \"Chennai\",\r\n      \"state\": \"Tamil Nadu\",\r\n      \"streetLine1\": \"123 Main St\",\r\n      \"streetLine2\": \"Apt 4B\",\r\n      \"yearsAtAddress\": \"3\"\r\n    },\r\n    \"contactInfo\": {\r\n      \"email\": \"camerongre1@gmail.com\",\r\n      \"phone\": \"9876235671\"\r\n    },\r\n    \"personalInfo\": {\r\n      \"dob\": \"1990-10-09\",\r\n      \"gender\": \"Male\",\r\n      \"lastName\": \"Johny\",\r\n      \"firstName\": \"Abi\",\r\n      \"spouseName\": \"\",\r\n      \"legalFullName\": \"Abi Johny\",\r\n      \"maritalStatus\": \"Single\"\r\n    }\r\n  },\r\n  \"employmentData\": {\r\n    \"companyName\": \"Tech Solutions Inc.\",\r\n    \"designation\": \"Software Engineer\",\r\n    \"grossSalary\": \"500000\",\r\n    \"annualIncome\": \"60000\",\r\n    \"employmentType\": \"Full Time\",\r\n    \"prevEmployments\": [\r\n      {\r\n        \"prevCompanyName\": \"Web Innovators\",\r\n        \"prevDesignation\": \"Frontend Developer\",\r\n        \"prevGrossSalary\": \"3000\",\r\n        \"prevAnnualIncome\": \"36000\",\r\n        \"prevEmploymentType\": \"Part-Time\",\r\n        \"prevEmploymentPeriod\": {\r\n          \"prevEmploymentYears\": 1,\r\n          \"prevEmploymentMonths\": 8\r\n        },\r\n        \"prevContactPersonName\": \"Anish\",\r\n        \"prevCompanyContactEmail\": \"anish.smith@webinnovators.com\",\r\n        \"prevCompanyContactNumber\": \"9876543210\"\r\n      }\r\n    ],\r\n    \"employmentPeriod\": {\r\n      \"employmentYears\": 2,\r\n      \"employmentMonths\": 6\r\n    },\r\n    \"contactPersonName\": \"Abi johny\",\r\n    \"companyContactEmail\": \"john.doe@techsolutions.com\",\r\n    \"companyContactNumber\": \"9876238989\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/saveApplicantDetails"
+					},
+					"response": []
+				},
+				{
+					"name": "ApplicantDashboard",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/ApplicantDashboard?emailId=camerongre1@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"ApplicantDashboard"
+							],
+							"query": [
+								{
+									"key": "emailId",
+									"value": "camerongre1@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllApplicantDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/getApplicantDetails"
+					},
+					"response": []
+				},
+				{
+					"name": "calculateCibilScore",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/calculateCibilScore"
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"bala@gmail.com\",\r\n    \"password\": \"1235\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/login"
+					},
+					"response": []
+				},
+				{
+					"name": "signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"bala\",\r\n    \"email\":\"bala@gmail.com\",\r\n    \"password\":\"1235\",\r\n    \"role\":\"Applicant\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/createUser"
+					},
+					"response": []
+				},
+				{
+					"name": "InitialApprover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"InitialApprover\": \"Approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/InitialApprover"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/getTaskBasedOnUser?user=InitialApprover",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/getTaskBasedOnUser?user=InitialApprover",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getTaskBasedOnUser"
+							],
+							"query": [
+								{
+									"key": "user",
+									"value": "InitialApprover"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UnderWriterApprover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"underWriterDecision\":\"Approved\",\r\n    \"clarificationDetails\":\"dtrctfvgbhjnmknjhbgvfcd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/UnderWriterApprover"
+					},
+					"response": []
+				},
+				{
+					"name": "LegalApprover",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"LegalApprover\":\"Approved\",\r\n    \"clarificationDetails\":\"dtrctfvgbhjnmknjhbgvfcd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/LegalApprover"
+					},
+					"response": []
+				},
+				{
+					"name": "getApplicantDataById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/getApplicantData/14\n"
+					},
+					"response": []
+				},
+				{
+					"name": "calculateTenureInterest",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"loanAmount\": 750000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/calculateTenureInterest"
+					},
+					"response": []
+				},
+				{
+					"name": "getApplicantDataByAccount",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": "http://localhost:8080/getApplicantDataByAccount/7311"
+					},
+					"response": []
+				},
+				{
+					"name": "getLoanDetails",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/getLoanDetails"
+					},
+					"response": []
+				},
+				{
+					"name": "getEmailIdABsedOn PRocessInstance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/getEmailId"
+					},
+					"response": []
+				},
+				{
+					"name": "download-all-Files",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/download-all-Files"
+					},
+					"response": []
+				},
+				{
+					"name": "downloadFileByEmailId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/downloadFileByEmailId?emailId=camerongre1@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"downloadFileByEmailId"
+							],
+							"query": [
+								{
+									"key": "emailId",
+									"value": "camerongre1@gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "calculateTenureInterestSaveData",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"loanAmount\":\"700000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/calculateTenureInterestSaveData"
+					},
+					"response": []
+				},
+				{
+					"name": "updateStatusApproved",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/updateStatusApproved/1471"
+					},
+					"response": []
+				},
+				{
+					"name": "customerAcknowledgement",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Customer\":\"Approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/customerAcknowledgement"
+					},
+					"response": []
+				},
+				{
+					"name": "updateStatusDisbursed",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8080/updateStatusDisbursed"
+					},
+					"response": []
+				},
+				{
+					"name": "ManagerEnd",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/ManagerEnd"
+					},
+					"response": []
+				},
+				{
+					"name": "CustomerAcknoledgemenMail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": "http://localhost:8080/CustomerAcknoledgemenMail"
+					},
+					"response": []
+				},
+				{
+					"name": "customerClarificationReply",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"Files\": {\r\n    \"comments\": \"This is a sample comment.\",\r\n    \"otherFiles\": [\r\n      {\r\n        \"name\": \"document1.pdf\"\r\n      },                \r\n      {\r\n        \"name\": \"document2.jpg\"\r\n      }\r\n    ],\r\n    \"selectedTypes\": [\r\n      \"Income Proof\",\r\n      \"Other Proof\"\r\n    ],\r\n    \"isFirstConsentChecked\": true,\r\n    \"isSecondConsentChecked\": true\r\n  },\r\n  \"houseHold\": {\r\n    \"dividends\": \"4\",\r\n    \"rentalPaid\": \"10000\",\r\n    \"otherIncome\": \"no\",\r\n    \"annualIncome\": \"6000000\",\r\n    \"grossRentals\": \"200000\",\r\n    \"interestPaid\": \"40000\",\r\n    \"medicalExpense\": \"200\",\r\n    \"clothingExpense\": \"300\",\r\n    \"childcareExpense\": \"250\",\r\n    \"educationExpense\": \"400\",\r\n    \"groceriesExpense\": \"500\",\r\n    \"personalInsurance\": \"100\",\r\n    \"recreationExpense\": \"150\",\r\n    \"communicationsExpense\": \"50\",\r\n    \"transportationExpense\": \"200\"\r\n  },\r\n  \"bankDetails\": {\r\n    \"address\": \"123 Bank Street, New York, NY\",\r\n    \"bankName\": \"National Bank\",\r\n    \"comments\": \"Building a new home\",\r\n    \"loanType\": \"homeLoan\",\r\n    \"loanAmount\": \"30000000\",\r\n    \"accountType\": \"Savings\",\r\n    \"phoneNumber\": \"9876543210\",\r\n    \"accountNumber\": \"1234567890\",\r\n    \"purposeOfLoan\": \"Home Renovation\"\r\n  },\r\n  \"liabilities\": {\r\n    \"bank\": \"XYZ Bank\",\r\n    \"loanType\": \"Home Loan\",\r\n    \"otherLoan\": true,\r\n    \"amountOwed\": \"50000\",\r\n    \"borrowerName\": \"Kaney\",\r\n    \"balanceOnCard\": \"10000\",\r\n    \"otherloanType\": \"Jewel Loan\",\r\n    \"creditCardBank\": \"ABC Bank\",\r\n    \"creditCardLimit\": \"50000\",\r\n    \"interestMonthly\": \"1500\",\r\n    \"currentLoanLimit\": \"100000\",\r\n    \"primaryCardHolder\": \"Johny\",\r\n    \"currentLoanBalance\": \"30000\"\r\n  },\r\n  \"assetsDetail\": {\r\n    \"fund\": \"90000\",\r\n    \"shares\": false,\r\n    \"stocks\": true,\r\n    \"otherAssets\": true,\r\n    \"motorVehicle\": true,\r\n    \"propertyType\": \"Residential\",\r\n    \"occupancyType\": \"Owner Occupied\",\r\n    \"savingDeposits\": \"50000\",\r\n    \"superannuation\": true,\r\n    \"propertyAddress\": \"123 Main St, Cityville, ST 12345\",\r\n    \"insurancePolicies\": false,\r\n    \"otherAssetsDetails\": \"Gold bars worth $50,000\"\r\n  },\r\n  \"personalData\": {\r\n    \"addressInfo\": {\r\n      \"zip\": \"630017\",\r\n      \"city\": \"Chennai\",\r\n      \"state\": \"Tamil Nadu\",\r\n      \"streetLine1\": \"123 Main St\",\r\n      \"streetLine2\": \"Apt 4B\",\r\n      \"yearsAtAddress\": \"3\"\r\n    },\r\n    \"contactInfo\": {\r\n      \"email\": \"camerongre1@gmail.com\",\r\n      \"phone\": \"9876235671\"\r\n    },\r\n    \"personalInfo\": {\r\n      \"dob\": \"1990-10-09\",\r\n      \"gender\": \"Male\",\r\n      \"lastName\": \"Johny\",\r\n      \"firstName\": \"Abi\",\r\n      \"spouseName\": \"\",\r\n      \"legalFullName\": \"Abi Johny\",\r\n      \"maritalStatus\": \"Single\"\r\n    }\r\n  },\r\n  \"employmentData\": {\r\n    \"companyName\": \"Tech Solutions Inc.\",\r\n    \"designation\": \"Software Engineer\",\r\n    \"grossSalary\": \"500000\",\r\n    \"annualIncome\": \"60000\",\r\n    \"employmentType\": \"Full Time\",\r\n    \"prevEmployments\": [\r\n      {\r\n        \"prevCompanyName\": \"Web Innovators\",\r\n        \"prevDesignation\": \"Frontend Developer\",\r\n        \"prevGrossSalary\": \"3000\",\r\n        \"prevAnnualIncome\": \"36000\",\r\n        \"prevEmploymentType\": \"Part-Time\",\r\n        \"prevEmploymentPeriod\": {\r\n          \"prevEmploymentYears\": 1,\r\n          \"prevEmploymentMonths\": 8\r\n        },\r\n        \"prevContactPersonName\": \"Anish\",\r\n        \"prevCompanyContactEmail\": \"anish.smith@webinnovators.com\",\r\n        \"prevCompanyContactNumber\": \"9876543210\"\r\n      }\r\n    ],\r\n    \"employmentPeriod\": {\r\n      \"employmentYears\": 2,\r\n      \"employmentMonths\": 6\r\n    },\r\n    \"contactPersonName\": \"Abi johny\",\r\n    \"companyContactEmail\": \"john.doe@techsolutions.com\",\r\n    \"companyContactNumber\": \"9876238989\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8080/customerClarificationReply"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

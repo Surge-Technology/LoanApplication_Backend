@@ -3,6 +3,7 @@ package com.surge.loanManagement.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 
@@ -93,18 +94,18 @@ public class DocumentService {
 		documentRepository.deleteById(documentId);
 	}
 	
-	public void storeFile(String fileName, String base64Content) throws IOException {
-
-        byte[] fileBytes = Base64.getDecoder().decode(base64Content);
-
-        File targetFile = new File(FileSystem + File.separator + fileName);
-
-        targetFile.getParentFile().mkdirs();
-
-        try (FileOutputStream fos = new FileOutputStream(targetFile)) {
-            fos.write(fileBytes);
-        }
-    }
+//	public void storeFile(String fileName, String base64Content) throws IOException {
+//
+//        byte[] fileBytes = Base64.getDecoder().decode(base64Content);
+//
+//        File targetFile = new File(FileSystem + File.separator + fileName);
+//
+//        targetFile.getParentFile().mkdirs();
+//
+//        try (FileOutputStream fos = new FileOutputStream(targetFile)) {
+//            fos.write(fileBytes);
+//        }
+//    }
 	  public Resource loadFileAsResource(String fileName) {
 	        try {
 	            File file = new File(FileSystem + File.separator + fileName);  // Assuming files are stored in uploadDir
@@ -115,6 +116,33 @@ public class DocumentService {
 	            }
 	        } catch (Exception e) {
 	            throw new RuntimeException("Could not read the file: " + fileName, e);
+	        }
+	    }
+	  
+	  
+	  public String storeFile(String fileName, String base64Content) {
+	        try {
+	            byte[] fileBytes = Base64.getDecoder().decode(base64Content);
+
+	            // Ensure directory exists
+	            File directory = new File(FileSystem);
+	            if (!directory.exists()) {
+	                directory.mkdirs();
+	            }
+
+	            // Save file
+	            File file = new File(Paths.get(FileSystem, fileName).toString());
+	            try (FileOutputStream fos = new FileOutputStream(file)) {
+	                fos.write(fileBytes);
+	            }
+
+	            System.out.println("File stored successfully: " + file.getAbsolutePath());
+	            return file.getAbsolutePath();  // Return stored file path
+
+	        } catch (IOException e) {
+	            System.err.println("Error saving file: " + fileName);
+	            e.printStackTrace();
+	            return null;
 	        }
 	    }
 }

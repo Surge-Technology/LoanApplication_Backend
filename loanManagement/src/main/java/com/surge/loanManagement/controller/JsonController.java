@@ -340,27 +340,6 @@ public class JsonController {
 		}
 	}
 
-	@CrossOrigin
-	@PostMapping("/emailSenderClarification")
-	public String emailSenderClarification() throws JsonMappingException, JsonProcessingException {
-		System.out.println(emailIdData);
-		System.out.println(customerData);
-		System.out.println(loanDetails);
-		JsonNode rootNode = objectMapper.readTree(loanDetails);
-		content = rootNode.path("clarificationDetails").asText();
-		System.out.println(content);
-		String to = "bala@gmail.com";
-//		String to = emailIdData;
-		String subject = "Clarification Needed";
-		String body = "Dear Customer,\n\n"
-				+ "We need additional clarification regarding your loan application. Specifically, we require the following details:\n"
-				+ "- " + content + "\n\n" + "Please provide the necessary information by visiting the following link: "
-				+ "http://localhost:3000/#/file\n\n" + "Thank you for your prompt attention to this matter.\n\n";
-		System.out.println(body);
-//		emailService.sendSimpleEmail(to, subject, body);
-		System.out.println("mail sent");
-		return "mail Sent";
-	}
 
 	@CrossOrigin
 	@PostMapping("/emailSenderApproval")
@@ -371,7 +350,7 @@ public class JsonController {
 		String subject = "Loan Approval Confirmation";
 		String body = "Congratulations! Your application has been deemed eligible for a loan. "
 				+ "We have attached the disbursement details in the form. Once you acknowledge, we can proceed with account generation."
-				+ "http://localhost:3000/#/LoanAmountDetails";
+				+ "http://localhost:3002/#/LoanAmountDetails";
 		System.out.println(body);
 //		emailService.sendSimpleEmail(to, subject, body);
 		return "Email Sent Successfully";
@@ -390,13 +369,13 @@ public class JsonController {
 		return "Email Sent Successfully";
 	}
 
-	@CrossOrigin
-	@GetMapping("/clarification")
-	public String clarificationDetails() {
-		System.out.println(content);
-		String data = content;
-		return data;
-	}
+//	@CrossOrigin
+//	@GetMapping("/clarification")
+//	public String clarificationDetails() {
+//		System.out.println();
+//		String data = content;
+//		return data;
+//	}
 
 	private static final String BASE_NUMBER = "22507000000000";
 	private long lastGeneratedNumber = Long.parseLong(BASE_NUMBER);
@@ -515,7 +494,7 @@ public class JsonController {
 		if (files != null && !files.isEmpty()) {
 			for (Map<String, Object> fileData : files) {
 				String fileName = (String) fileData.get("name");
-				String fileContent = (String) fileData.get("content"); // Ensure the frontend sends base64 content
+				String fileContent = (String) fileData.get("content"); 
 				documentService.storeFile(fileName, fileContent);
 				System.out.println("Stored file: " + fileName);
 			}
